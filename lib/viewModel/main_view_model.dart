@@ -16,10 +16,13 @@ class MainViewModel extends ChangeNotifier {
   bool loading = false;
   bool initialLoading = false;
   bool hasData = true;
-  int page = 0;
+  static int page = 0;
   List<GitDataModel> gitData = [];
   List<GitDataModel> _temp = [];
+  List<GitDataModel> _offlineTemp = [];
+
   String error = '';
+  final db = DBService();
 
   ConnectivityResult connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
@@ -38,17 +41,12 @@ class MainViewModel extends ChangeNotifier {
   }
 
   fetchGitData() async {
-    final db = DBService();
     try {
       if (hasData) {
         loading = true;
         var list = await ApiService().getGitData(page);
         if (list.isNotEmpty) {
-          _temp.addAll(list);
-          gitData = [..._temp];
-          for (var item in _temp) {
-            db.insert(item);
-          }
+          _temp = list;
         } else {
           loading = false;
           hasData = false;
@@ -56,11 +54,21 @@ class MainViewModel extends ChangeNotifier {
       }
     } catch (e) {
       error = e.toString().split('Exception').last;
-      _temp = await db.read();
-      gitData = [..._temp];
     }
     loading = false;
     initialLoading = false;
+    gitData.addAll(_temp);
+    for (var item in _temp) {
+      db.insert(item);
+    }
+    notifyListeners();
+  }
+
+  getDBData() async {
+    _offlineTemp = await db.read();
+    if (gitData.isEmpty) {
+      gitData.addAll(_offlineTemp);
+    }
     notifyListeners();
   }
 

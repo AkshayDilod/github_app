@@ -25,6 +25,9 @@ class MainView extends StatelessWidget {
     const circularProgressIndicator = CircularProgressIndicator(
       color: primaryColor,
     );
+    if (mainVM.connectionStatus == ConnectivityResult.none) {
+      mainVM.getDBData();
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('Jake\'s Git'),
@@ -66,9 +69,11 @@ class MainView extends StatelessWidget {
                     var max = onScrollNotification.metrics.maxScrollExtent
                         .ceilToDouble();
                     final height = (size.height * .15) * 3.ceilToDouble();
-                    if (max <= (before + height)) {
-                      mainVM.updatePage(mainVM.page + 1);
-                      return true;
+                    if (mainVM.connectionStatus != ConnectivityResult.none) {
+                      if (max <= (before + height)) {
+                        mainVM.updatePage(MainViewModel.page + 1);
+                        return true;
+                      }
                     }
                   }
                   return false;

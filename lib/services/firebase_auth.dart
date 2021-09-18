@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../ui/views/main_view.dart';
-import '../ui/views/otp_view.dart';
-import '../ui/widgets/progress_dialog.dart';
+import 'package:github_repo_as_list/ui/views/main_view.dart';
+import 'package:github_repo_as_list/ui/views/otp_view.dart';
+import 'package:github_repo_as_list/ui/widgets/progress_dialog.dart';
 
 String? currentUserUid;
 String? mobileNo;
-class MobileAuth{
+
+class MobileAuth {
   final auth = FirebaseAuth.instance;
   String? verificationId;
   int? forceResendToken;
@@ -37,13 +38,13 @@ class MobileAuth{
 
     await auth.verifyPhoneNumber(
       phoneNumber: mobileNo,
-      timeout: Duration(seconds: 30),
+      timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential credential) async {
         print('I am trying to login automatically...');
-        auth.signInWithCredential(credential).then((result) {
+        auth.signInWithCredential(credential).then((result) async {
           if (result.user != null) {
             currentUserUid = result.user!.uid;
-            authenticationSuccess(context);
+           await authenticationSuccess(context);
           } else {
             Fluttertoast.showToast(
               msg: 'Authentication Failed!',
@@ -75,11 +76,13 @@ class MobileAuth{
         );
         verificationId = vid;
         forceResendToken = resendToken;
-        Navigator.pop(context);
-        Navigator.pushAndRemoveUntil(
-            context, MaterialPageRoute(builder: (context)=>const OtpView()), (route) => false);
+        // Navigator.pushAndRemoveUntil(
+        //     context,
+        //     MaterialPageRoute(builder: (context) => const OtpView()),
+        //     (route) => false);
       },
       codeAutoRetrievalTimeout: (verificationId) {
+        Navigator.pop(context);
       },
     );
   }
@@ -150,8 +153,8 @@ class MobileAuth{
         verificationId = vid;
         forceResendToken = resendToken;
         Navigator.pop(context);
-        Navigator.pushAndRemoveUntil(
-            context, MaterialPageRoute(builder: (context)=>const OtpView()), (route) => false);
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const OtpView()));
         print('otp send to user device successfully');
       },
       codeAutoRetrievalTimeout: (verificationId) {

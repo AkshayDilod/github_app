@@ -1,14 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'services/db_service.dart';
 import 'services/firebase_auth.dart';
 import 'ui/views/login_view.dart';
-import 'ui/views/otp_view.dart';
 import 'viewModel/main_view_model.dart';
 import 'package:provider/provider.dart';
 import 'constants.dart';
 import 'services/biomertric_service.dart';
-import 'ui/views/main_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -43,9 +43,6 @@ class DBService {
       final db = await initDB();
       var res = await db.query(_tbName);
       offlineData = res.map((e) => GitDataModel.fromMap(e)).toList();
-      for (var item in offlineData) {
-        print(item.language);
-      }
     } catch (e) {
       print(e);
     }
