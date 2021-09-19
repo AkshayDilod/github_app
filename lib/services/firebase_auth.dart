@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:github_repo_as_list/ui/views/main_view.dart';
-import 'package:github_repo_as_list/ui/views/otp_view.dart';
-import 'package:github_repo_as_list/ui/widgets/progress_dialog.dart';
+import '../ui/views/main_view.dart';
+import '../ui/views/otp_view.dart';
+import '../ui/widgets/progress_dialog.dart';
 
 String? currentUserUid;
 String? mobileNo;

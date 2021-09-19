@@ -30,19 +30,23 @@ class DBService {
   insert(GitDataModel newEntry) async {
     try {
       final db = await initDB();
-      var res = await db.insert(_tbName, newEntry.toMap());
-      return res;
+      var count = await db.insert(_tbName, newEntry.toMap());
+      return count;
     } catch (e) {
       print(e);
     }
   }
 
-  Future<List<GitDataModel>> read() async {
+  Future<List<GitDataModel>?> read(int _offset) async {
     List<GitDataModel> offlineData = [];
     try {
       final db = await initDB();
-      var res = await db.query(_tbName);
-      offlineData = res.map((e) => GitDataModel.fromMap(e)).toList();
+      var list = await db.query(_tbName, limit: 15, offset: _offset);
+      if (list.isNotEmpty) {
+        offlineData = list.map((e) => GitDataModel.fromMap(e)).toList();
+      } else {
+        return null;
+      }
     } catch (e) {
       print(e);
     }
